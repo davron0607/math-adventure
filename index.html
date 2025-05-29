@@ -137,9 +137,6 @@
       document.body.style.background = `linear-gradient(to bottom right, ${colors[theme]}, #fff)`;
     }
     function newQuestion() {
-      const checkBtn = document.getElementById("checkButton");
-      checkBtn.disabled = false;
-      checkBtn.removeAttribute("data-answered");
       document.getElementById("checkButton").disabled = false;
       const diff = document.getElementById("difficulty").value;
       const range = diff === "easy" ? 10 : diff === "medium" ? 50 : 100;
