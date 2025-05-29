@@ -27,7 +27,8 @@
     #visualization {
       font-size: 32px;
       margin: 15px;
-      line-height: 1.6;
+      line-height: 1.8;
+      white-space: pre-wrap;
     }
     #progressBarContainer {
       width: 80%;
@@ -148,13 +149,13 @@
 
       let visualHTML = '';
       if (isAdd) {
-        visualHTML = `<div>${fruit1.repeat(a)} + ${fruit2.repeat(b)}</div>`;
+        visualHTML = `${fruit1.repeat(a)} + ${fruit2.repeat(b)}`;
       } else {
         const total = a + b;
-        visualHTML = `<div>${fruit1.repeat(total)} − ${fruit1.repeat(b)}</div>`;
+        visualHTML = `${fruit1.repeat(total)}\n− ${fruit2.repeat(b)}`;
       }
 
-      document.getElementById("visualization").innerHTML = visualHTML;
+      document.getElementById("visualization").innerHTML = visualHTML.replace(/\n/g, "<br>");
     }
 
     function checkAnswer() {
