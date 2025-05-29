@@ -20,9 +20,12 @@
     #character {
       height: 100px;
     }
-    #question, #result, #score, #level, #rewards {
+    #question, #visualization, #result, #score, #level, #rewards {
       font-size: 20px;
       margin: 10px;
+    }
+    #visualization {
+      font-size: 24px;
     }
     #progressBarContainer {
       width: 80%;
@@ -117,10 +120,11 @@
     }
 
     function newQuestion() {
-      answered = false; // Reset for new question
+      answered = false;
       document.getElementById("checkButton").disabled = false;
       document.getElementById("answer").value = '';
       document.getElementById("result").innerText = '';
+      document.getElementById("visualization").innerText = '';
 
       const diff = document.getElementById("difficulty").value;
       const range = diff === "easy" ? 10 : diff === "medium" ? 50 : 100;
@@ -128,12 +132,30 @@
       const b = Math.floor(Math.random() * range) + 1;
       const isAdd = Math.random() > 0.5;
 
-      document.getElementById("question").innerText = isAdd ? `${a} + ${b}` : `${a + b} - ${b}`;
+      const questionText = isAdd ? `${a} + ${b}` : `${a + b} - ${b}`;
+      document.getElementById("question").innerText = questionText;
       currentAnswer = isAdd ? a + b : a;
+
+      showVisualization(a, b, isAdd);
+    }
+
+    function showVisualization(a, b, isAdd) {
+      const fruits = ['🍎','🍌','🍇','🍓','🍊','🥝','🍍'];
+      const fruit1 = fruits[Math.floor(Math.random() * fruits.length)];
+      const fruit2 = fruits[Math.floor(Math.random() * fruits.length)];
+
+      let visualHTML = '';
+      if (isAdd) {
+        visualHTML = `${fruit1.repeat(a)} + ${fruit2.repeat(b)}`;
+      } else {
+        visualHTML = `${fruit1.repeat(a + b)} − ${fruit1.repeat(b)}`;
+      }
+
+      document.getElementById("visualization").innerText = visualHTML;
     }
 
     function checkAnswer() {
-      if (answered) return;  // Prevent repeated scoring
+      if (answered) return;
       answered = true;
       document.getElementById("checkButton").disabled = true;
 
