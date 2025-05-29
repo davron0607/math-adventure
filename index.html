@@ -52,9 +52,6 @@
 <body>
   <h1>🌈 Math Adventure!</h1>
 
-  <input id="childName" placeholder="Enter child's name" />
-  <button onclick="saveProfile()">✅ Login</button><br>
-
   <label>Theme:
     <select id="theme" onchange="applyTheme()">
       <option value="sky">Sky</option>
@@ -86,8 +83,8 @@
   <div id="progressBarContainer"><div id="progressBar"></div></div>
   <div id="rewards">🎁 Rewards: <span id="rewardBox"></span></div>
 
-  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
-  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+  <audio id="correct-sound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/button/beep-10.mp3"></audio>
   <audio id="levelup-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
 
   <script>
@@ -96,7 +93,6 @@
     let level = 1;
     let correctCount = 0;
     let totalGames = 0;
-    let childName = "";
     let answered = false;
 
     const rewards = ['🏅','🎖️','🥇','🧸','🎲'];
@@ -107,13 +103,6 @@
       ocean: 'https://cdn-icons-png.flaticon.com/512/616/616430.png',
       desert: 'https://cdn-icons-png.flaticon.com/512/616/616438.png',
     };
-
-    function saveProfile() {
-      childName = document.getElementById("childName").value;
-      localStorage.setItem("mathGameChild", childName);
-      applyTheme();
-      newQuestion();
-    }
 
     function applyTheme() {
       const theme = document.getElementById("theme").value;
@@ -197,9 +186,8 @@
     }
 
     window.onload = () => {
-      childName = localStorage.getItem("mathGameChild") || "";
-      document.getElementById("childName").value = childName;
       applyTheme();
+      newQuestion();
     };
   </script>
 </body>
