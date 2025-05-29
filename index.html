@@ -137,6 +137,9 @@
       document.body.style.background = `linear-gradient(to bottom right, ${colors[theme]}, #fff)`;
     }
     function newQuestion() {
+      const checkBtn = document.getElementById("checkButton");
+      checkBtn.disabled = false;
+      checkBtn.removeAttribute("data-answered");
       document.getElementById("checkButton").disabled = false;
       const diff = document.getElementById("difficulty").value;
       const range = diff === "easy" ? 10 : diff === "medium" ? 50 : 100;
@@ -147,8 +150,10 @@
       currentAnswer = isAdd ? a + b : a;
     }
     function checkAnswer() {
-      if (answered) return;  // Prevent re-checking
-      answered = true;
+      const checkBtn = document.getElementById("checkButton");
+    
+      // Immediately disable the button to block repeat clicks
+      checkBtn.disabled = true;
     
       const ans = parseInt(document.getElementById("answer").value);
       const correct = ans === currentAnswer;
@@ -159,14 +164,17 @@
     
       document.getElementById(correct ? "correct-sound" : "wrong-sound").play();
     
+      // Only increase score if this is the first valid check for this question
       if (correct) {
-        score++;
-        correctCount++;
-        totalGames++;
-        document.getElementById("checkButton").disabled = true;
-        if (correctCount % 10 === 0) levelUp();
-        updateProgressBar();
-        updateDashboard();
+        if (!checkBtn.dataset.answered) {
+          score++;
+          correctCount++;
+          totalGames++;
+          checkBtn.dataset.answered = "true"; // Mark this question as checked
+          if (correctCount % 10 === 0) levelUp();
+          updateProgressBar();
+          updateDashboard();
+        }
       }
     }
     function levelUp() {
