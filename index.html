@@ -147,11 +147,16 @@
       currentAnswer = isAdd ? a + b : a;
     }
     function checkAnswer() {
+      if (answered) return;  // Prevent re-checking
+      answered = true;
+    
       const ans = parseInt(document.getElementById("answer").value);
       const correct = ans === currentAnswer;
+    
       document.getElementById("result").innerText = correct
         ? "🎉 Correct!"
         : `❌ Oops! It was ${currentAnswer}`;
+    
       document.getElementById(correct ? "correct-sound" : "wrong-sound").play();
     
       if (correct) {
