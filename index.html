@@ -149,7 +149,9 @@
     function checkAnswer() {
       const ans = parseInt(document.getElementById("answer").value);
       const correct = ans === currentAnswer;
-      document.getElementById("checkButton").disabled = true;
+      if (correct) {
+                    document.getElementById("checkButton").disabled = true;
+                    }
       document.getElementById("result").innerText = correct
         ? "🎉 Correct!"
         : `❌ Oops! It was ${currentAnswer}`;
