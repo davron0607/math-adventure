@@ -2,133 +2,226 @@
 <html>
 <head>
   <title>Math Adventure</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Comic Sans MS', cursive;
       text-align: center;
-      background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb);
       padding: 20px;
+      background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb);
+      overflow-x: hidden;
+    }
+    input, button, select {
+      font-size: 16px;
+      padding: 8px 12px;
+      margin: 6px;
     }
     #character {
-      height: 150px;
+      height: 100px;
     }
-    #question {
-      font-size: 26px;
-      margin: 20px;
-    }
-    #result {
-      margin: 15px;
-      font-size: 22px;
-    }
-    button, input {
-      padding: 10px 20px;
-      font-size: 16px;
-      margin: 5px;
-    }
-    #score, #level, #progress {
+    #question, #result, #score, #level, #rewards {
       font-size: 20px;
-      margin-top: 10px;
+      margin: 10px;
     }
     #progressBarContainer {
       width: 80%;
-      background-color: #ddd;
+      height: 20px;
+      background: #ddd;
+      border-radius: 10px;
       margin: auto;
-      border-radius: 20px;
     }
     #progressBar {
       width: 0%;
-      height: 20px;
-      background-color: #4CAF50;
-      border-radius: 20px;
+      height: 100%;
+      background: #4CAF50;
+      border-radius: 10px;
+    }
+    #confetti {
+      pointer-events: none;
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 999;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 10px; height: 10px;
+      background-color: red;
+      animation: fall 2s linear infinite;
+    }
+    @keyframes fall {
+      to { transform: translateY(100vh) rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <h1>🌈 Math Adventure!</h1>
-  <img id="character" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="character">
+
+  <input id="childName" placeholder="Enter child's name" />
+  <button onclick="saveProfile()">✅ Login</button>
+  <br>
+  <label>Theme:
+    <select id="theme" onchange="applyTheme()">
+      <option value="sky">Sky</option>
+      <option value="jungle">Jungle</option>
+      <option value="space">Space</option>
+      <option value="ocean">Ocean</option>
+      <option value="desert">Desert</option>
+    </select>
+  </label>
+
+  <label>Difficulty:
+    <select id="difficulty">
+      <option value="easy">Easy</option>
+      <option value="medium">Medium</option>
+      <option value="hard">Hard</option>
+    </select>
+  </label>
+
+  <div>
+    <img id="character" src="" alt="Character" />
+  </div>
   <div id="question"></div>
-  <input type="number" id="answer" placeholder="Your answer" />
-  <button onclick="checkAnswer()">Check</button>
-  <div id="result"></div>
+  <div id="visualization"></div>
+  <input type="number" id="answer" />
+  <button id="checkButton" onclick="checkAnswer()">Check</button>
   <button onclick="newQuestion()">Next Question</button>
+
+  <div id="result"></div>
   <div id="score">Score: 0</div>
   <div id="level">Level: 1</div>
-  <div id="progress">Progress:</div>
-  <div id="progressBarContainer">
-    <div id="progressBar"></div>
+  <div id="progressBarContainer"><div id="progressBar"></div></div>
+  <div id="rewards">🎁 Rewards: <span id="rewardBox"></span></div>
+
+  <div id="dashboard">
+    <h2>📊 Parent Dashboard</h2>
+    <p id="summary"></p>
+    <canvas id="chart" width="300" height="150"></canvas>
+    <button onclick="generatePDF()">📄 Export PDF</button>
+    <button onclick="sendEmail()">✉️ Email Report</button>
   </div>
+
+  <div id="confetti"></div>
 
   <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
   <audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+  <audio id="levelup-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
 
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
   <script>
-    let currentAnswer;
-    let score = 0;
-    let level = 1;
-    let correctCount = 0;
-    const characters = [
-      "https://cdn-icons-png.flaticon.com/512/616/616408.png",
-      "https://cdn-icons-png.flaticon.com/512/616/616440.png",
-      "https://cdn-icons-png.flaticon.com/512/616/616438.png",
-      "https://cdn-icons-png.flaticon.com/512/616/616430.png",
-      "https://cdn-icons-png.flaticon.com/512/616/616422.png"
-    ];
-
-    function updateProgressBar() {
-      const percent = (correctCount % 10) * 10;
-      document.getElementById("progressBar").style.width = percent + "%";
+    let currentAnswer, score = 0, level = 1, correctCount = 0;
+    let totalGames = 0, startTime = Date.now(), childName = "";
+    const rewards = ['🏅','🎖️','🥇','🧸','🎲'];
+    const characters = {
+      sky: 'https://cdn-icons-png.flaticon.com/512/616/616408.png',
+      jungle: 'https://cdn-icons-png.flaticon.com/512/616/616440.png',
+      space: 'https://cdn-icons-png.flaticon.com/512/616/616422.png',
+      ocean: 'https://cdn-icons-png.flaticon.com/512/616/616430.png',
+      desert: 'https://cdn-icons-png.flaticon.com/512/616/616438.png',
+    };
+    function saveProfile() {
+      childName = document.getElementById("childName").value;
+      localStorage.setItem("mathGameChild", childName);
+      applyTheme();
+      newQuestion();
     }
-
+    function applyTheme() {
+      const theme = document.getElementById("theme").value;
+      document.getElementById("character").src = characters[theme];
+      const colors = {
+        sky: '#a1c4fd', jungle: '#228B22', space: '#111', ocean: '#00BFFF', desert: '#EDC9AF'
+      };
+      document.body.style.background = `linear-gradient(to bottom right, ${colors[theme]}, #fff)`;
+    }
+    function newQuestion() {
+      document.getElementById("checkButton").disabled = false;
+      const diff = document.getElementById("difficulty").value;
+      const range = diff === "easy" ? 10 : diff === "medium" ? 50 : 100;
+      const a = Math.floor(Math.random() * range) + 1;
+      const b = Math.floor(Math.random() * range) + 1;
+      const isAdd = Math.random() > 0.5;
+      document.getElementById("question").innerText = isAdd ? `${a} + ${b}` : `${a + b} - ${b}`;
+      currentAnswer = isAdd ? a + b : a;
+    }
+    function checkAnswer() {
+      const ans = parseInt(document.getElementById("answer").value);
+      const correct = ans === currentAnswer;
+      document.getElementById("checkButton").disabled = true;
+      document.getElementById("result").innerText = correct
+        ? "🎉 Correct!"
+        : `❌ Oops! It was ${currentAnswer}`;
+      document.getElementById(correct ? "correct-sound" : "wrong-sound").play();
+      if (correct) {
+        score++; correctCount++; totalGames++;
+        if (correctCount % 10 === 0) levelUp();
+        updateProgressBar();
+        updateDashboard();
+      }
+    }
     function levelUp() {
       level++;
-      correctCount = 0;
       document.getElementById("level").innerText = `Level: ${level}`;
-      alert("🎉 You've leveled up to Level " + level + "! Great job!");
+      document.getElementById("levelup-sound").play();
+      const reward = rewards[Math.floor(Math.random() * rewards.length)];
+      document.getElementById("rewardBox").innerText += ` ${reward}`;
+      showConfetti();
     }
-
-    function newQuestion() {
-      const num1 = Math.floor(Math.random() * 89) + 11;
-      const num2 = Math.floor(Math.random() * 89) + 11;
-      const isAddition = Math.random() > 0.5;
-
-      const questionText = isAddition
-        ? `${num1} + ${num2}`
-        : `${num1 + num2} - ${num2}`;
-
-      currentAnswer = isAddition ? num1 + num2 : num1 + num2 - num2;
-      document.getElementById("question").innerText = `🧠 Solve: ${questionText}`;
-      document.getElementById("result").innerText = "";
-      document.getElementById("answer").value = "";
-
-      const characterImg = characters[Math.floor(Math.random() * characters.length)];
-      document.getElementById("character").src = characterImg;
-    }
-
-    function checkAnswer() {
-      const userAnswer = parseInt(document.getElementById("answer").value, 10);
-      const resultDiv = document.getElementById("result");
-      const correctSound = document.getElementById("correct-sound");
-      const wrongSound = document.getElementById("wrong-sound");
-
-      if (userAnswer === currentAnswer) {
-        resultDiv.innerText = "🎉 Correct! You got a star! ⭐";
-        correctSound.play();
-        score++;
-        correctCount++;
-        if (correctCount >= 10) {
-          levelUp();
-        }
-      } else {
-        resultDiv.innerText = `❌ Try again! The answer was ${currentAnswer}`;
-        wrongSound.play();
-        score = Math.max(0, score - 1);
-      }
-
+    function updateProgressBar() {
+      const width = (correctCount % 10) * 10;
+      document.getElementById("progressBar").style.width = width + "%";
       document.getElementById("score").innerText = `Score: ${score}`;
-      updateProgressBar();
     }
-
-    newQuestion();
+    function updateDashboard() {
+      const time = Math.floor((Date.now() - startTime) / 1000);
+      const summary = `${childName || "Player"} played ${totalGames} games, scored ${score} stars, spent ${time} sec.`;
+      document.getElementById("summary").innerText = summary;
+      const ctx = document.getElementById("chart").getContext("2d");
+      if (window.chart) window.chart.destroy();
+      window.chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: ['Stars', 'Games', 'Seconds'],
+          datasets: [{
+            label: 'Progress',
+            data: [score, totalGames, time],
+            backgroundColor: ['gold', 'skyblue', 'lightgreen']
+          }]
+        }
+      });
+    }
+    function generatePDF() {
+      const doc = new jsPDF();
+      doc.text("Math Adventure Report", 10, 10);
+      doc.text(document.getElementById("summary").innerText, 10, 20);
+      doc.save("math_adventure_report.pdf");
+    }
+    function sendEmail() {
+      emailjs.init("YOUR_USER_ID");  // Replace with your EmailJS user ID
+      emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        name: childName,
+        message: document.getElementById("summary").innerText
+      }).then(() => alert("Email sent!"), err => alert("Failed: " + err));
+    }
+    function showConfetti() {
+      const confetti = document.getElementById("confetti");
+      confetti.innerHTML = "";
+      for (let i = 0; i < 100; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti-piece";
+        c.style.left = Math.random() * 100 + "%";
+        c.style.backgroundColor = `hsl(${Math.random() * 360},100%,50%)`;
+        confetti.appendChild(c);
+      }
+      setTimeout(() => confetti.innerHTML = "", 3000);
+    }
+    window.onload = () => {
+      childName = localStorage.getItem("mathGameChild") || "";
+      document.getElementById("childName").value = childName;
+      applyTheme();
+    };
   </script>
 </body>
 </html>
