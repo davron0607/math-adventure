@@ -149,15 +149,16 @@
     function checkAnswer() {
       const ans = parseInt(document.getElementById("answer").value);
       const correct = ans === currentAnswer;
-      if (correct) {
-                    document.getElementById("checkButton").disabled = true;
-                    }
       document.getElementById("result").innerText = correct
         ? "🎉 Correct!"
         : `❌ Oops! It was ${currentAnswer}`;
       document.getElementById(correct ? "correct-sound" : "wrong-sound").play();
+    
       if (correct) {
-        score++; correctCount++; totalGames++;
+        score++;
+        correctCount++;
+        totalGames++;
+        document.getElementById("checkButton").disabled = true;
         if (correctCount % 10 === 0) levelUp();
         updateProgressBar();
         updateDashboard();
