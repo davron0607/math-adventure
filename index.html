@@ -117,7 +117,7 @@
     }
 
     function newQuestion() {
-      answered = false;
+      answered = false; // Reset for new question
       document.getElementById("checkButton").disabled = false;
       document.getElementById("answer").value = '';
       document.getElementById("result").innerText = '';
@@ -127,12 +127,13 @@
       const a = Math.floor(Math.random() * range) + 1;
       const b = Math.floor(Math.random() * range) + 1;
       const isAdd = Math.random() > 0.5;
+
       document.getElementById("question").innerText = isAdd ? `${a} + ${b}` : `${a + b} - ${b}`;
       currentAnswer = isAdd ? a + b : a;
     }
 
     function checkAnswer() {
-      if (answered) return; // block double score
+      if (answered) return;  // Prevent repeated scoring
       answered = true;
       document.getElementById("checkButton").disabled = true;
 
