@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Math Adventure</title>
+  <style>
+    body {
+      font-family: 'Comic Sans MS', cursive;
+      text-align: center;
+      background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb);
+      padding: 20px;
+    }
+    #character {
+      height: 150px;
+    }
+    #question {
+      font-size: 26px;
+      margin: 20px;
+    }
+    #result {
+      margin: 15px;
+      font-size: 22px;
+    }
+    button, input {
+      padding: 10px 20px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    #score, #level, #progress {
+      font-size: 20px;
+      margin-top: 10px;
+    }
+    #progressBarContainer {
+      width: 80%;
+      background-color: #ddd;
+      margin: auto;
+      border-radius: 20px;
+    }
+    #progressBar {
+      width: 0%;
+      height: 20px;
+      background-color: #4CAF50;
+      border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🌈 Math Adventure!</h1>
+  <img id="character" src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="character">
+  <div id="question"></div>
+  <input type="number" id="answer" placeholder="Your answer" />
+  <button onclick="checkAnswer()">Check</button>
+  <div id="result"></div>
+  <button onclick="newQuestion()">Next Question</button>
+  <div id="score">Score: 0</div>
+  <div id="level">Level: 1</div>
+  <div id="progress">Progress:</div>
+  <div id="progressBarContainer">
+    <div id="progressBar"></div>
+  </div>
+
+  <audio id="correct-sound" src="https://www.soundjay.com/buttons/sounds/button-09.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.soundjay.com/buttons/sounds/button-10.mp3"></audio>
+
+  <script>
+    let currentAnswer;
+    let score = 0;
+    let level = 1;
+    let correctCount = 0;
+    const characters = [
+      "https://cdn-icons-png.flaticon.com/512/616/616408.png",
+      "https://cdn-icons-png.flaticon.com/512/616/616440.png",
+      "https://cdn-icons-png.flaticon.com/512/616/616438.png",
+      "https://cdn-icons-png.flaticon.com/512/616/616430.png",
+      "https://cdn-icons-png.flaticon.com/512/616/616422.png"
+    ];
+
+    function updateProgressBar() {
+      const percent = (correctCount % 10) * 10;
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function levelUp() {
+      level++;
+      correctCount = 0;
+      document.getElementById("level").innerText = `Level: ${level}`;
+      alert("🎉 You've leveled up to Level " + level + "! Great job!");
+    }
+
+    function newQuestion() {
+      const num1 = Math.floor(Math.random() * 89) + 11;
+      const num2 = Math.floor(Math.random() * 89) + 11;
+      const isAddition = Math.random() > 0.5;
+
+      const questionText = isAddition
+        ? `${num1} + ${num2}`
+        : `${num1 + num2} - ${num2}`;
+
+      currentAnswer = isAddition ? num1 + num2 : num1 + num2 - num2;
+      document.getElementById("question").innerText = `🧠 Solve: ${questionText}`;
+      document.getElementById("result").innerText = "";
+      document.getElementById("answer").value = "";
+
+      const characterImg = characters[Math.floor(Math.random() * characters.length)];
+      document.getElementById("character").src = characterImg;
+    }
+
+    function checkAnswer() {
+      const userAnswer = parseInt(document.getElementById("answer").value, 10);
+      const resultDiv = document.getElementById("result");
+      const correctSound = document.getElementById("correct-sound");
+      const wrongSound = document.getElementById("wrong-sound");
+
+      if (userAnswer === currentAnswer) {
+        resultDiv.innerText = "🎉 Correct! You got a star! ⭐";
+        correctSound.play();
+        score++;
+        correctCount++;
+        if (correctCount >= 10) {
+          levelUp();
+        }
+      } else {
+        resultDiv.innerText = `❌ Try again! The answer was ${currentAnswer}`;
+        wrongSound.play();
+        score = Math.max(0, score - 1);
+      }
+
+      document.getElementById("score").innerText = `Score: ${score}`;
+      updateProgressBar();
+    }
+
+    newQuestion();
+  </script>
+</body>
+</html>
