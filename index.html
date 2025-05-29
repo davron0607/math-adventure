@@ -20,12 +20,14 @@
     #character {
       height: 100px;
     }
-    #question, #visualization, #result, #score, #level, #rewards {
+    #question, #result, #score, #level, #rewards {
       font-size: 20px;
       margin: 10px;
     }
     #visualization {
-      font-size: 24px;
+      font-size: 32px;
+      margin: 15px;
+      line-height: 1.6;
     }
     #progressBarContainer {
       width: 80%;
@@ -124,7 +126,7 @@
       document.getElementById("checkButton").disabled = false;
       document.getElementById("answer").value = '';
       document.getElementById("result").innerText = '';
-      document.getElementById("visualization").innerText = '';
+      document.getElementById("visualization").innerHTML = '';
 
       const diff = document.getElementById("difficulty").value;
       const range = diff === "easy" ? 10 : diff === "medium" ? 50 : 100;
@@ -146,12 +148,13 @@
 
       let visualHTML = '';
       if (isAdd) {
-        visualHTML = `${fruit1.repeat(a)} + ${fruit2.repeat(b)}`;
+        visualHTML = `<div>${fruit1.repeat(a)} + ${fruit2.repeat(b)}</div>`;
       } else {
-        visualHTML = `${fruit1.repeat(a + b)} − ${fruit1.repeat(b)}`;
+        const total = a + b;
+        visualHTML = `<div>${fruit1.repeat(total)} − ${fruit1.repeat(b)}</div>`;
       }
 
-      document.getElementById("visualization").innerText = visualHTML;
+      document.getElementById("visualization").innerHTML = visualHTML;
     }
 
     function checkAnswer() {
