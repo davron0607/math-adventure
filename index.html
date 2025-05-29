@@ -26,9 +26,13 @@
     }
     #visualization {
       font-size: 32px;
-      margin: 15px;
+      margin: 15px auto;
       line-height: 1.8;
-      white-space: pre-wrap;
+      white-space: normal;
+      word-break: break-word;
+      max-width: 90%;
+      display: block;
+      min-height: 50px;
     }
     #progressBarContainer {
       width: 80%;
@@ -49,8 +53,8 @@
   <h1>🌈 Math Adventure!</h1>
 
   <input id="childName" placeholder="Enter child's name" />
-  <button onclick="saveProfile()">✅ Login</button>
-  <br>
+  <button onclick="saveProfile()">✅ Login</button><br>
+
   <label>Theme:
     <select id="theme" onchange="applyTheme()">
       <option value="sky">Sky</option>
@@ -69,9 +73,7 @@
     </select>
   </label>
 
-  <div>
-    <img id="character" src="" alt="Character" />
-  </div>
+  <div><img id="character" src="" alt="Character" /></div>
   <div id="question"></div>
   <div id="visualization"></div>
   <input type="number" id="answer" />
@@ -144,18 +146,17 @@
 
     function showVisualization(a, b, isAdd) {
       const fruits = ['🍎','🍌','🍇','🍓','🍊','🥝','🍍'];
-      const fruit1 = fruits[Math.floor(Math.random() * fruits.length)];
-      const fruit2 = fruits[Math.floor(Math.random() * fruits.length)];
+      const fruit = fruits[Math.floor(Math.random() * fruits.length)];
 
       let visualHTML = '';
       if (isAdd) {
-        visualHTML = `${fruit1.repeat(a)} + ${fruit2.repeat(b)}`;
+        visualHTML = `${fruit.repeat(a)} + ${fruit.repeat(b)}`;
       } else {
         const total = a + b;
-        visualHTML = `${fruit1.repeat(total)}\n− ${fruit2.repeat(b)}`;
+        visualHTML = `${fruit.repeat(total)}<br>− ${fruit.repeat(b)}`;
       }
 
-      document.getElementById("visualization").innerHTML = visualHTML.replace(/\n/g, "<br>");
+      document.getElementById("visualization").innerHTML = visualHTML;
     }
 
     function checkAnswer() {
