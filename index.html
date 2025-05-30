@@ -18,14 +18,14 @@
       margin: 6px;
     }
     #character {
-      height: 100px;
+      height: 150px;
     }
-    #question, #result, #score, #level, #rewards {
-      font-size: 20px;
+    #question {
+      font-size: 40px;
       margin: 10px;
     }
     #visualization {
-      font-size: 32px;
+      font-size: 64px;
       margin: 15px auto;
       line-height: 1.8;
       white-space: normal;
@@ -33,6 +33,10 @@
       max-width: 90%;
       display: block;
       min-height: 50px;
+    }
+    #result, #score, #level, #rewards {
+      font-size: 20px;
+      margin: 10px;
     }
     #progressBarContainer {
       width: 80%;
@@ -97,11 +101,11 @@
 
     const rewards = ['🏅','🎖️','🥇','🧸','🎲'];
     const characters = {
-      sky: 'https://cdn-icons-png.flaticon.com/512/616/616408.png',
-      jungle: 'https://cdn-icons-png.flaticon.com/512/616/616440.png',
-      space: 'https://cdn-icons-png.flaticon.com/512/616/616422.png',
-      ocean: 'https://cdn-icons-png.flaticon.com/512/616/616430.png',
-      desert: 'https://cdn-icons-png.flaticon.com/512/616/616438.png',
+      sky: 'https://static.wikia.nocookie.net/monsterhigh/images/6/6f/Frankie_Stein.png',
+      jungle: 'https://static.wikia.nocookie.net/monsterhigh/images/2/2f/Clawdeen_Wolf.png',
+      space: 'https://static.wikia.nocookie.net/monsterhigh/images/9/9e/Draculaura.png',
+      ocean: 'https://static.wikia.nocookie.net/monsterhigh/images/3/3e/Lagoona_Blue.png',
+      desert: 'https://static.wikia.nocookie.net/monsterhigh/images/5/5e/Cleo_de_Nile.png',
     };
 
     function applyTheme() {
