@@ -10,7 +10,6 @@
       text-align: center;
       padding: 20px;
       background: linear-gradient(to bottom right, #a1c4fd, #c2e9fb);
-      overflow-x: hidden;
     }
     input, button, select {
       font-size: 16px;
@@ -19,13 +18,15 @@
     }
     #character {
       height: 150px;
-    }
-    #question {
-      font-size: 40px;
       margin: 10px;
     }
-    #visualization {
+    #question {
       font-size: 64px;
+      font-weight: bold;
+      margin: 20px;
+    }
+    #visualization {
+      font-size: 80px;
       margin: 15px auto;
       line-height: 1.8;
       white-space: normal;
@@ -87,6 +88,7 @@
   <div id="progressBarContainer"><div id="progressBar"></div></div>
   <div id="rewards">🎁 Rewards: <span id="rewardBox"></span></div>
 
+  <!-- Soft sounds -->
   <audio id="correct-sound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
   <audio id="wrong-sound" src="https://www.soundjay.com/button/beep-10.mp3"></audio>
   <audio id="levelup-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
@@ -96,16 +98,15 @@
     let score = 0;
     let level = 1;
     let correctCount = 0;
-    let totalGames = 0;
     let answered = false;
 
     const rewards = ['🏅','🎖️','🥇','🧸','🎲'];
     const characters = {
-      sky: 'https://static.wikia.nocookie.net/monsterhigh/images/6/6f/Frankie_Stein.png',
-      jungle: 'https://static.wikia.nocookie.net/monsterhigh/images/2/2f/Clawdeen_Wolf.png',
-      space: 'https://static.wikia.nocookie.net/monsterhigh/images/9/9e/Draculaura.png',
-      ocean: 'https://static.wikia.nocookie.net/monsterhigh/images/3/3e/Lagoona_Blue.png',
-      desert: 'https://static.wikia.nocookie.net/monsterhigh/images/5/5e/Cleo_de_Nile.png',
+      sky: 'images/frankie_stein.png',
+      jungle: 'images/clawdeen_wolf.png',
+      space: 'images/draculaura.png',
+      ocean: 'images/lagoona_blue.png',
+      desert: 'images/cleo_de_nile.png',
     };
 
     function applyTheme() {
@@ -169,7 +170,6 @@
       if (correct) {
         score++;
         correctCount++;
-        totalGames++;
         if (correctCount % 10 === 0) levelUp();
         updateProgressBar();
       }
