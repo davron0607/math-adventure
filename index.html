@@ -55,6 +55,9 @@
       background: #4CAF50;
       border-radius: 10px;
     }
+    .fruit {
+      font-size: 40px; /* Adjust smaller if needed */
+    }
   </style>
 </head>
 <body>
@@ -145,10 +148,10 @@
 
       let visualHTML = '';
       if (isAdd) {
-        visualHTML = `${fruit.repeat(a)} + ${fruit.repeat(b)}`;
+        visualHTML = `<span class='fruit'>${fruit.repeat(a)}</span> + <span class='fruit'>${fruit.repeat(b)}</span>`;
       } else {
         const total = a + b;
-        visualHTML = `${fruit.repeat(total)}<br>− ${fruit.repeat(b)}`;
+        visualHTML = `<span class='fruit'>${fruit.repeat(total)}</span><br>− <span class='fruit'>${fruit.repeat(b)}</span>`;
       }
 
       document.getElementById("visualization").innerHTML = visualHTML;
