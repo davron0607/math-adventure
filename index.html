@@ -88,7 +88,6 @@
   <div id="progressBarContainer"><div id="progressBar"></div></div>
   <div id="rewards">🎁 Rewards: <span id="rewardBox"></span></div>
 
-  <!-- Soft sounds -->
   <audio id="correct-sound" src="https://www.soundjay.com/button/beep-07.mp3"></audio>
   <audio id="wrong-sound" src="https://www.soundjay.com/button/beep-10.mp3"></audio>
   <audio id="levelup-sound" src="https://www.soundjay.com/human/sounds/applause-8.mp3"></audio>
@@ -100,13 +99,14 @@
     let correctCount = 0;
     let answered = false;
 
-    const rewards = ['🏅','🎖️','🥇','🧸','🎲'];
+    const base64Image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGNg+A8AAQEBAQAY3dykAAAAAElFTkSuQmCC";
+
     const characters = {
-      sky: 'images/frankie_stein.png',
-      jungle: 'images/clawdeen_wolf.png',
-      space: 'images/draculaura.png',
-      ocean: 'images/lagoona_blue.png',
-      desert: 'images/cleo_de_nile.png',
+      sky: base64Image,
+      jungle: base64Image,
+      space: base64Image,
+      ocean: base64Image,
+      desert: base64Image,
     };
 
     function applyTheme() {
@@ -179,7 +179,7 @@
       level++;
       document.getElementById("level").innerText = `Level: ${level}`;
       document.getElementById("levelup-sound").play();
-      const reward = rewards[Math.floor(Math.random() * rewards.length)];
+      const reward = ['🏅','🎖️','🥇','🧸','🎲'][Math.floor(Math.random() * 5)];
       document.getElementById("rewardBox").innerText += ` ${reward}`;
     }
 
